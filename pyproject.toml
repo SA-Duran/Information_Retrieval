@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Informatio_RAG"
+version = "0.0.1"
+description = "ML for information retrieval using hugging face"
+authors = [    { name = "Sadurane", email = "samuel.duran.en@gmail.com" }]
+license = { text = "MIT" }  # adjust if you have a LICENSE file
+keywords = ["nlp", "Information", "RAG"]
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "python-dotenv",
+    "langchain",
+    "PyPDF2",
+    "pandas",
+    "pymongo",
+    "huggingface_hub",
+    "streamlit"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

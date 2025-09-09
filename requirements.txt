@@ -1,0 +1,9 @@
+python-dotenv
+langchain
+pypdf
+datasets
+pandas
+huggingface_hub
+streamlit
+langchain_chroma
+langchain_huggingface
