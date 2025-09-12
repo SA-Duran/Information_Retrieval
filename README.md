@@ -1,53 +1,138 @@
-# Information_Retrieval
+# 🔍 Information Retrieval RAG System
 
 ## Overview  
-Retrieves relevant documents or text given a user query. Supports indexing, search, and API‑based access.
+This project implements a **Retrieval-Augmented Generation (RAG)** system using **LangChain**, **Hugging Face Inference API**, and **ChromaDB**. It allows users to upload PDF documents and interact with them through a **Streamlit chatbot interface**. The chatbot supports multi-turn conversations and context-aware question rewriting.
 
-## Structure & Components
+---
 
-- `src/`: core search/indexing logic and utility modules  
-- `research/`: notebooks for experimenting with different methods and datasets  
-- `app.py`: REST API endpoint, handles incoming queries and returns results  
-- `template.py`: formatting, helper functions for output representation  
-- `test.py`: examples or automated tests to verify searching/indexing behavior  
-- `requirements.txt` / `pyproject.toml`: dependency declarations
+## 💡 Key Features
 
-## Technologies & Libraries
+- ✅ **PDF ingestion** and plain-text extraction  
+- ✅ **Text chunking** using `RecursiveCharacterTextSplitter`  
+- ✅ **Vector store** with `ChromaDB` and HF `BAAI/bge-small-en-v1.5` embeddings  
+- ✅ **Conversational model** using `google/gemma-2-2b-it` via Hugging Face Inference API  
+- ✅ **History-aware retriever and QA chain**  
+- ✅ **Web interface** built with Streamlit  
+- ✅ **Chat history persistence** across user sessions  
 
-| Component | Library / Tool | Role / Connection |
-|-----------|------------------|--------------------|
-| Indexing & Search Algorithms | Likely scikit‑learn, BM25, or custom vector similarity libraries | Implements how documents/text are indexed and how queries are matched (ranking) |
-| Text Processing | pandas, nltk / spaCy / sklearn’s preprocessing modules | Tokenization, normalization, cleaning before indexing |
-| API / Web Layer | Flask (or FastAPI) | `app.py` defines routes to receive query payloads and return search results |
-| Template / Output Formatting | Python’s standard libraries + `template.py` | Converts raw search results into JSON or other structured output |
-| Configuration & Dependency Management | `requirements.txt`, `pyproject.toml` | Ensures reproducible environment; manages library versions |
-| Testing / Examples | `test.py` plus notebooks in `research/` | Verifies that indexing + search + API work end‑to‑end; allows experiment tracking/troubleshooting |
+---
 
-## Setup
+## 🧱 Architecture
 
-```bash
-git clone https://github.com/SA-Duran/Information_Retrieval.git
-cd Information_Retrieval
-pip install -r requirements.txt
+```text
+              ┌─────────────┐
+              │  PDF Upload │◄───────────────┐
+              └────┬────────┘                │
+                   ▼                         │
+         ┌────────────────────┐              │
+         │ Extract Plain Text │              │
+         └────────┬───────────┘              │
+                  ▼                          │
+       ┌─────────────────────────┐           │
+       │ Chunk Text into Vectors │           │
+       └────────┬────────────────┘           │
+                ▼                            │
+       ┌────────────────────────────┐        │
+       │ Store in Chroma Vector DB │        │
+       └────────┬───────────────────┘        │
+                ▼                            │
+     ┌───────────────────────────────┐       │
+     │ History-Aware Retriever + QA  │◄──────┘
+     └───────────────────────────────┘
+                ▼
+         ┌─────────────┐
+         │ Chat Output │
+         └─────────────┘
 ```
 
-## Usage
+---
 
-- Run the API:
+## 🧰 Tech Stack
 
-  ```bash
-  python app.py
-  ```
+| Component         | Technology / Tool                           |
+|------------------|----------------------------------------------|
+| Web UI           | Streamlit                                   |
+| LLM              | `google/gemma-2-2b-it` via Hugging Face API |
+| Embeddings       | `BAAI/bge-small-en-v1.5`                     |
+| Vector Store     | `Chroma` + `LangChain`                      |
+| Prompting        | `ChatPromptTemplate`, `MessagesPlaceholder` |
+| Backend          | LangChain RAG chain (retrieval + generation)|
+| Deployment       | `streamlit run app.py`                      |
 
-- Send a search request:
+---
 
-  ```bash
-  curl -X POST http://localhost:5000/search \
-    -H "Content-Type: application/json" \
-    -d '{"query": "your search query"}'
-  ```
+## 📦 Installation
 
-- Use `test.py` to try example queries or validate indexing/search behavior.
+```bash
+git clone https://github.com/your-user/Information_RAG.git
+cd Information_RAG
+pip install -e .
+```
 
-## License  
-MIT
+Or, with `pyproject.toml` (PEP 621):
+
+```bash
+pip install .
+```
+
+### ⚠️ Requirements
+- Python ≥ 3.8
+- Hugging Face token stored in `.env` as `HF_TOKEN`
+
+Example `.env`:
+
+```env
+HF_TOKEN=your_huggingface_api_token_here
+```
+
+---
+
+## 🚀 Usage
+
+### Run the app:
+
+```bash
+streamlit run app.py
+```
+
+Then, go to [http://localhost:8501](http://localhost:8501) in your browser.
+
+### Workflow:
+
+1. Upload one or more PDFs in the sidebar
+2. Click “Process” to:
+   - Extract text
+   - Chunk and embed
+   - Initialize vector DB
+   - Set up conversational chain
+3. Start chatting with your documents in natural language
+
+---
+
+## 🧪 Example Prompt
+
+> “What are the key responsibilities outlined in this document?”
+
+The system will:
+- Rewrite the question with context
+- Retrieve relevant passages
+- Answer using the LLM
+
+---
+
+## 📁 Project Structure
+
+| File                  | Description                           |
+|-----------------------|---------------------------------------|
+| `app.py`              | Streamlit app and chat interface      |
+| `helper.py`           | Logic for PDF parsing, embeddings, and RAG chain building:contentReference[oaicite:0]{index=0}  
+| `pyproject.toml`      | Project metadata and dependencies:contentReference[oaicite:1]{index=1}  
+| `trials.ipynb`        | Local testing / experimentation       |
+
+---
+
+## 📝 License
+
+MIT License
+
+---
